@@ -30,3 +30,19 @@ A call stack for GDB break command processing
 #20 0x00000000004082d5 in main (argc=<optimised out>, argv=<optimised out>) at /work/risc-v/riscv-gnu-toolchain/riscv-binutils-gdb/gdb/gdb.c:32
 
 ```
+
+A temporary fix for the "Register 834 is not available" error ( https://github.com/riscv/riscv-gnu-toolchain/issues/217 )
+
+```
+static int
+riscv_breakpoint_kind_from_pc (struct gdbarch *gdbarch, CORE_ADDR *pcptr)
+{
+  //
+  // a temporary fix to allow GDB to work with QEMU gdbstub
+  //
+  gdbarch_tdep (gdbarch)->supports_compressed_isa = SUP_NO;
+  return 4;
+
+......
+}
+```
