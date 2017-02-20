@@ -1,6 +1,6 @@
 
 
-GDB packet processing
+19/02/17 GDB packet processing
 
 ```
 #0  gdb_handle_packet (s=0x5604b7b0d040, line_buf=0x5604b7b0d05c "g") at /work/risc-v/riscv-qemu/gdbstub.c:788
@@ -22,7 +22,7 @@ GDB packet processing
 #12 0x00005604b6774331 in main (argc=10, argv=0x7ffdcb600678, envp=0x7ffdcb6006d0) at vl.c:4662
 ```
 
-An exception on breakpoint processing
+19/02/17 An exception on breakpoint processing
 ```
 #0  0x0000000000710acd in __cxa_throw ()
 #1  0x00000000004d729c in throw_exception_cxx (exception=...) at /work/risc-v/riscv-gnu-toolchain/riscv-binutils-gdb/gdb/common/common-exceptions.c:303
