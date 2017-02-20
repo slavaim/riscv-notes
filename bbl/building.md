@@ -1,5 +1,5 @@
 
-Building BBL with a Linux kernel as a payload and debug symbols.
+19/02/17  Building BBL with a Linux kernel as a payload and debug symbols.
 
 ```
 $ cd /work/risc-v/riscv-tools/riscv-pk
