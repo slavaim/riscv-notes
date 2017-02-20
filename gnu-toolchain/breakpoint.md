@@ -1,6 +1,6 @@
 
 
-A call stack for GDB break command processing
+19/02/17  A call stack for GDB break command processing
 
 ```
 #0  create_breakpoints_sal (gdbarch=0x1547600, canonical=0x7ffcfaae4f00, cond_string=0x0, extra_string=0x0, type=bp_breakpoint, disposition=disp_donttouch, thread=-1, task=0, ignore_count=0, 
@@ -30,7 +30,7 @@ A call stack for GDB break command processing
 #20 0x00000000004082d5 in main (argc=<optimised out>, argv=<optimised out>) at /work/risc-v/riscv-gnu-toolchain/riscv-binutils-gdb/gdb/gdb.c:32
 
 ```
-An exception on breakpoint for QEMU
+19/02/17  An exception on breakpoint for QEMU
 
 ```
 #0  0x0000000000710acd in __cxa_throw ()
@@ -84,7 +84,7 @@ An exception on breakpoint for QEMU
 #37 0x00000000004082d5 in main (argc=<optimised out>, argv=<optimised out>) at /work/risc-v/riscv-gnu-toolchain/riscv-binutils-gdb/gdb/gdb.c:32
 ```
 
-A temporary fix for the "Register 834 is not available" error ( https://github.com/riscv/riscv-gnu-toolchain/issues/217 )
+19/02/17 A temporary fix for the "Register 834 is not available" error ( https://github.com/riscv/riscv-gnu-toolchain/issues/217 )
 
 ```
 static int
