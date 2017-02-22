@@ -1,5 +1,5 @@
 
-Load an image in QEMU with ```-S -s``` command options to wait for GDB.
+Load an image with bbl+vmlinux+initramfs in QEMU with ```-S -s``` command options to wait for GDB.
 
 ```
 $ /work/risc-v/riscv-qemu/build/bin/qemu-system-riscv64 -m 4G -kernel /work/risc-v/riscv-tools/riscv-pk/build-with-payload/bbl -nographic -S -s
