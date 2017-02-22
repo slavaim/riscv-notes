@@ -142,11 +142,6 @@ read -t 5 -n1 -s key
 # Execute the shell
 exec sh
 
-# Create new mountpoint in RAM, make it our new root location and overlay it
-# with our storage area (if overlay area exists at all). This operation invokes
-# the script '/etc/03_init.sh' as the new init process.
-#exec /etc/02_overlay.sh
-
 echo "(/init) - you can never see this unless there is a serious bug..."
 
 # Wait until any key has been pressed.
