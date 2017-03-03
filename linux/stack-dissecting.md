@@ -17,14 +17,11 @@ The dissambler listing for 0xffffffff800b7cd8 is
 Which is consistent with
 
 ```
-ret_from_syscall:
-	/* Set user a0 to kernel a0 */
-	REG_S a0, PT_A0(sp)
-	/* Trace syscalls, but only if requested by the user. */
-	REG_L t0, TASK_THREAD_INFO(tp)
-	REG_L t0, TI_FLAGS(t0)
-	andi t0, t0, _TIF_SYSCALL_TRACE
-	bnez t0, handle_syscall_trace_exit
+ret_from_exception:
+	REG_L s0, PT_SSTATUS(sp)
+	csrc sstatus, SR_IE
+	andi s0, s0, SR_PS
+	bnez s0, restore_all
 ```
 
 The link register is set at the start of ```handle_exception``` before calling any handler.
