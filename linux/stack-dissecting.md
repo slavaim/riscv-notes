@@ -12,6 +12,7 @@ The dissambler listing for 0xffffffff800b7cd8 is
    0xffffffff800b7cd8 <+372>:	ld	s0,256(sp)
    0xffffffff800b7cdc <+376>:	csrci	sstatus,2
    0xffffffff800b7ce0 <+380>:	andi	s0,s0,256
+   0xffffffff800b7ce4 <+384>:	bnez	s0,0xffffffff800b7d00 <handle_exception+412>
 ```
 
 Which is consistent with
