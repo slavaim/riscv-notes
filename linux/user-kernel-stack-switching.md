@@ -1,5 +1,5 @@
 
-The task stack is switched when a task enters in a kernel mode by calling ```handle_exception ( arch/riscv/kernel/entry.S )``` which processes all type of exceptions including system calls and interrupts.
+The task stack is switched when a task enters in a kernel mode ( a supervisor mode for RISC-V ) by calling ```handle_exception ( arch/riscv/kernel/entry.S )``` which processes all type of exceptions including system calls and interrupts.
 
 The scratch register ```sscratch``` contains the kernel mode stack pointer if the task enters the kernel mode from a user mode.
 
