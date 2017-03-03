@@ -19,7 +19,7 @@ _save_context:
   ...
 ```
 
-Before the interrups are enabled the scratch register is zeroed so subsequent calls to ```handle_exception``` will know that the current stack pointer register ```sp``` contains kernel mode stack address.
+Before the interrups are enabled the scratch register is zeroed so subsequent calls to ```handle_exception``` will find that the current stack pointer register ```sp``` contains kernel mode stack address.
 
 ```
 /* Set sscratch register to 0, so that if a recursive exception
