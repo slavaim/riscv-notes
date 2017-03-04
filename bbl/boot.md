@@ -28,6 +28,17 @@ The 0x00001000 address is mapped to ROM with a trampoline code to 0x80000000. ``
    0x1004:	jr	t0
 ```
 
+The above code is defined in QEMU in ```riscv-qemu/hw/riscv/riscv_board.c```
+```
+    uint32_t reset_vec[8] = {
+        0x297 + 0x80000000 - 0x1000, /* reset vector */
+        0x00028067,                  /* jump to DRAM_BASE */
+        0x00000000,                  /* reserved */
+        0x0,                         /* config string pointer */
+        0, 0, 0, 0                   /* trap vector */
+    };
+```
+
 The 0x80000000 address is a start of DRAM where the BBL is loaded. Below are definitions that are the same for the both QEMU and spike simulator.
 
 ```
