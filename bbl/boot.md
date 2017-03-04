@@ -1,6 +1,6 @@
 
-After reset a CPU fetches the instruction from DEFAULT_RSTVEC = 0x00001000.
-For example below is QEMU CPU reset emulation from riscv-qemu/target-riscv/cpu.c
+After reset a CPU fetches the instruction from ```DEFAULT_RSTVEC = 0x00001000```.
+For example below is QEMU CPU reset emulation from ```riscv-qemu/target-riscv/cpu.c```
 ```
 static void riscv_cpu_reset(CPUState *s)
 {
@@ -20,7 +20,7 @@ static void riscv_cpu_reset(CPUState *s)
 }
 ```
 
-The 0x00001000 address is mapped to ROM with a trampoline code to 0x80000000. AUIPC moves its immediate value 12 bits to the left and adds to the current PC , so t0 = 0(x7ffff<<12)+ 0x1000 = 0x80000000
+The 0x00001000 address is mapped to ROM with a trampoline code to 0x80000000. ```AUIPC``` instruction moves its immediate value 12 bits to the left and adds to the current PC , so ```t0 = 0(x7ffff<<12)+ 0x1000 = 0x80000000```
 
 ```
 (gdb) x/10i 0x1000
