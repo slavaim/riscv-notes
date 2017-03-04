@@ -35,7 +35,7 @@ The 0x80000000 address is a start of DRAM where the BBL is loaded. Below are def
 #define DRAM_BASE          0x80000000
 ```
 
-After ```jr	t0``` has been execute the register content is as follows ( t0 and pc are equal )
+After ```jr	t0``` has been execute the register content is as follows ( ```t0``` and ```pc``` are equal )
 
 ```
 (gdb) info registers
@@ -75,7 +75,7 @@ pc             0x0000000080000000	2147483648
 
 BBL assigns 0x80000000 address to ```reset_vector``` by placing it in the beginning of the .text.init section which is linked to 0x80000000 .
 
-From riscv-tools/riscv-pk/machine/mentry.S
+From ```riscv-tools/riscv-pk/machine/mentry.S```
 ```
   .section .text.init,"ax",@progbits
   .globl reset_vector
@@ -83,7 +83,7 @@ reset_vector:
   j do_reset
 ```
 
-From riscv-tools/riscv-pk/pk/pk.lds
+From ```riscv-tools/riscv-pk/pk/pk.lds```
 ```
   /* Begining of code and text segment */
   . = 0x80000000;
