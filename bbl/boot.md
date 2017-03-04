@@ -1,4 +1,41 @@
-After reset a CPU fetches the instruction from 0x80000000.
+
+After reset a CPU fetches the instruction from DEFAULT_RSTVEC = 0x00001000.
+For example below is QEMU CPU reset emulation from riscv-qemu/target-riscv/cpu.c
+```
+static void riscv_cpu_reset(CPUState *s)
+{
+    RISCVCPU *cpu = RISCV_CPU(s);
+    RISCVCPUClass *mcc = RISCV_CPU_GET_CLASS(cpu);
+    CPURISCVState *env = &cpu->env;
+    CPUState *cs = CPU(cpu);
+
+    mcc->parent_reset(s);
+#ifndef CONFIG_USER_ONLY
+    tlb_flush(s, 1);
+    env->priv = PRV_M;
+    env->mtvec = DEFAULT_MTVEC;
+#endif
+    env->pc = DEFAULT_RSTVEC;
+    cs->exception_index = EXCP_NONE;
+}
+```
+
+The 0x00001000 address is mapped to ROM with a trampoline code to 0x80000000. AUIPC moves its immediate value 12 bits to the left and adds to the current PC , so t0 = 0(x7ffff<<12)+ 0x1000 = 0x80000000
+
+```
+(gdb) x/10i 0x1000
+   0x1000:	auipc	t0,0x7ffff
+   0x1004:	jr	t0
+```
+
+The 0x80000000 address is a start of DMA. Below are definitions that are the same for the both QEMU and spike simulator.
+
+```
+#define DEFAULT_RSTVEC     0x00001000
+#define DRAM_BASE          0x80000000
+```
+
+After ```jr	t0``` has been execute the register content is as follows ( t0 and pc are equal )
 
 ```
 (gdb) info registers
