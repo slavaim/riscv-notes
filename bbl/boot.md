@@ -1,4 +1,4 @@
-After reset a CPU fetches the first instruction from 0x80000000.
+After reset a CPU fetches the instruction from 0x80000000.
 
 ```
 (gdb) info registers
