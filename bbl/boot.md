@@ -1,5 +1,5 @@
 
-After reset a CPU fetches the instruction from ```DEFAULT_RSTVEC = 0x00001000```.
+After reset a CPU fetches the first instruction from ```DEFAULT_RSTVEC = 0x00001000```.
 For example below is QEMU CPU reset emulation from ```riscv-qemu/target-riscv/cpu.c```
 ```
 static void riscv_cpu_reset(CPUState *s)
