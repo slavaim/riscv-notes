@@ -28,7 +28,7 @@ The 0x00001000 address is mapped to ROM with a trampoline code to 0x80000000. ``
    0x1004:	jr	t0
 ```
 
-The above code is defined in QEMU in ```riscv-qemu/hw/riscv/riscv_board.c```
+For QEMU the above code is defined in QEMU in ```riscv-qemu/hw/riscv/riscv_board.c```
 ```
     uint32_t reset_vec[8] = {
         0x297 + 0x80000000 - 0x1000, /* reset vector */
