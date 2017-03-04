@@ -28,7 +28,7 @@ The 0x00001000 address is mapped to ROM with a trampoline code to 0x80000000. ``
    0x1004:	jr	t0
 ```
 
-The 0x80000000 address is a start of DMA. Below are definitions that are the same for the both QEMU and spike simulator.
+The 0x80000000 address is a start of DRAM where the BBL is loaded. Below are definitions that are the same for the both QEMU and spike simulator.
 
 ```
 #define DEFAULT_RSTVEC     0x00001000
