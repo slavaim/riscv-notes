@@ -23,7 +23,7 @@ static void riscv_cpu_reset(CPUState *s)
 The 0x00001000 address is mapped to ROM with a trampoline code to 0x80000000. ```AUIPC``` instruction moves its immediate value 12 bits to the left and adds to the current PC , so ```t0 = 0(x7ffff<<12)+ 0x1000 = 0x80000000```
 
 ```
-(gdb) x/10i 0x1000
+(gdb) x/2i 0x1000
    0x1000:	auipc	t0,0x7ffff
    0x1004:	jr	t0
 ```
