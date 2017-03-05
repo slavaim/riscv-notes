@@ -131,7 +131,7 @@ The machine level SBI BBL code is remapped at the top of the range reserved abov
     sbi_pt[idx] = pte_create((DRAM_BASE / RISCV_PGSIZE) + i, PTE_G | PTE_R | PTE_X);
   }
 ```
-After ```sbi_pt``` has been filled it is inserted in the superviser page directory. This establishes the mapping visible from superviser level.
+After ```sbi_pt``` has been filled it is inserted in the superviser page directory. This establishes the mapping visible from supervisor level.
 ```
   pte_t* sbi_pte = middle_pt + ((num_middle_pts << RISCV_PGLEVEL_BITS)-1);
   assert(!*sbi_pte);
