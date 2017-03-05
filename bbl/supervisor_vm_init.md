@@ -63,11 +63,16 @@ The info structure describes the payload with an ELF header. Typical values on m
 $6 = {entry = 0xffffffff80000000, first_user_vaddr = 0xffffffff80000000, first_vaddr_after_user = 0xffffffff803b2000, load_offset = 0x102800000}
 ```
 
-The physical memory size available for supervisor is calculated as
+The memory size available for machine level mode is
+```
+(gdb) p/x mem_size
+$16 = 0x100000000
+```
+It should be adjusted for supervisor. The memory size available for supervisor is calculated as
 ```
 mem_size = MIN(mem_size, highest_va - info.first_user_vaddr) & -MEGAPAGE_SIZE;
 ```
-On my system this value is ( !!!! TO DO check value at entry )
+On my system this value is
 ```
 (gdb) p/x $a5
 $11 = 0x7d800000
