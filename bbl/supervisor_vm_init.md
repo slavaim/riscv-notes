@@ -1,5 +1,7 @@
 
-Dissecting ```supervisor_vm_init``` routine.
+##Dissecting ```supervisor_vm_init``` routine.
+
+The function builds page table structures to map BBL payload to supervisor mode. The function operates in machine level physical address space. You should not be fooled by presence of supervisor virtual addresses as they are adjusted to machine level physical address before being accessed. 
 
 ```
 static void supervisor_vm_init()
@@ -48,10 +50,56 @@ static void supervisor_vm_init()
 }
 ```
 
-Commentary.
+###Commentary.
 
 ```
 uintptr_t highest_va = DRAM_BASE - first_free_paddr;
 ```
-Calculate the hghest supervisor VA. DRAM_BASE is less than first_free_paddr which is the address of the first free megapage after BBL+payload was copied to DRAM starting at DRAM_BASE machine level address. On my tets system ```DRAM_BASE = 0x80000000``` and ```first_free_paddr = 0x82800000```. The difference is a negative number which in two's complement arithmetic gives the valid virtual address at the top of the 64 bit address range ```highest_va = 0xfffffffffd800000```
+Calculate the highest supervisor VA(virtual address). ```DRAM_BASE``` is less than ```first_free_paddr``` which is the address of the first free megapage after BBL+payload was loaded to DRAM starting at DRAM_BASE machine level address. On my test system ```DRAM_BASE = 0x80000000``` and ```first_free_paddr = 0x82800000``` these are machine level physical adresses as CPU starts at machine level mode. The difference is a negative number which in two's complement arithmetic gives the valid virtual address at the top of the 64 bit address range ```highest_va = 0xfffffffffd800000``` for supervisor mode. This leaves intact a top VA range in supervider mode thus preserving the machine level code which is mapped at this range, see below.
 
+The info structure describes the payload with an ELF header. Typical values on my system for the Linux kernel as a payload as they are shown by GDB print command are
+```
+(gdb) p/x info
+$6 = {entry = 0xffffffff80000000, first_user_vaddr = 0xffffffff80000000, first_vaddr_after_user = 0xffffffff803b2000, load_offset = 0x102800000}
+```
+
+The physical memory size available for supervisor is calculated as
+```
+mem_size = MIN(mem_size, highest_va - info.first_user_vaddr) & -MEGAPAGE_SIZE;
+```
+On my system this value is ( !!!! TO DO check value at entry )
+```
+(gdb) p/x $a5
+$11 = 0x7d800000
+```
+
+Then the special page table structure is allocated. This structure is used to map the BBL and its payload at the top of the address space inaccessible bthrough the supervisor page table structure ```root_pt``` which will be discussed shortly.
+```
+pte_t* sbi_pt = (pte_t*)(info.first_vaddr_after_user + info.load_offset);
+```
+The ```sbi_pt``` value on my machine is
+```
+(gdb) p/x $s1
+$15 = 0x82bb2000
+```
+
+As you can see the CPU works with machine level addresses while ```info.first_vaddr_after_user``` is a supervisor virtual address. The ```info.load_offset``` value is used to adjust the supervisor virtual address to machine level physical address. 
+
+
+/////////////////
+
+The machine level BBL code with payload is remapped at the top of the range reserved above ```highest_va``` by a separate page table structure rooted at ```sbi_pt```. The BBL has been loaded at ```DRAM_BASE``` physical address. This address range is mapped as a read only range for supervisor mode. The PTE are also marked as global so they are visible in all address spaces.
+
+```
+  // map SBI at top of vaddr space
+  extern char _sbi_end;
+  uintptr_t num_sbi_pages = ((uintptr_t)&_sbi_end - DRAM_BASE - 1) / RISCV_PGSIZE + 1;
+  assert(num_sbi_pages <= (1 << RISCV_PGLEVEL_BITS));
+  for (uintptr_t i = 0; i < num_sbi_pages; i++) {
+    uintptr_t idx = (1 << RISCV_PGLEVEL_BITS) - num_sbi_pages + i;
+    sbi_pt[idx] = pte_create((DRAM_BASE / RISCV_PGSIZE) + i, PTE_G | PTE_R | PTE_X);
+  }
+  pte_t* sbi_pte = middle_pt + ((num_middle_pts << RISCV_PGLEVEL_BITS)-1);
+  assert(!*sbi_pte);
+  *sbi_pte = ptd_create((uintptr_t)sbi_pt >> RISCV_PGSHIFT);
+```
