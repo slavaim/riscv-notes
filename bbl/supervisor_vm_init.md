@@ -119,7 +119,7 @@ The supervisor page table structure is then initialized to map supervisor virtua
     middle_pt[l2_idx] = pte_create(paddr >> RISCV_PGSHIFT, PTE_G | PTE_R | PTE_W | PTE_X);
   }
 ```
-The machine level SBI BBL code is remapped at the top of the range reserved above ```highest_va``` by a separate page table structure rooted at ```sbi_pt```. The BBL has been loaded at ```DRAM_BASE``` physical address. This address range is mapped as a read only range for supervisor mode. The PTE are also marked as global so they are visible in all address spaces. This address range is inaccessible through the suppervisor page table structure initialized in ```middle_pt```.
+The machine level SBI BBL code is remapped at the top of the range reserved above ```highest_va```. The BBL has been loaded at ```DRAM_BASE``` machine level physical address. This address range is mapped as a read only range for supervisor mode. The PTE are also marked as global so they are visible in all address spaces. This address range is inaccessible through the suppervisor page table structure initialized in ```middle_pt```.
 
 ```
   // map SBI at top of vaddr space
