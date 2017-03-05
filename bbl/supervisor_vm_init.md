@@ -1,5 +1,5 @@
 
-##Dissecting ```supervisor_vm_init``` routine.
+##Dissecting supervisor_vm_init routine.
 
 The function builds page table structures to map BBL payload to supervisor mode. The function operates in machine level physical address space. You should not be fooled by presence of supervisor virtual addresses as they are adjusted to machine level physical address before being accessed. 
 
