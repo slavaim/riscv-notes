@@ -78,7 +78,7 @@ On my system this value is
 $11 = 0x7d800000
 ```
 
-Then the special page table structure is allocated. This structure is used to map the BBL and its payload at the top of the address space inaccessible bthrough the supervisor page table structure ```root_pt``` which will be discussed shortly.
+Then the SBI page table is allocated. This page table is used to map the SBI BBL at the top of the address space.
 ```
 pte_t* sbi_pt = (pte_t*)(info.first_vaddr_after_user + info.load_offset);
 ```
@@ -119,7 +119,7 @@ The supervisor page table structure is then initialized to map supervisor virtua
     middle_pt[l2_idx] = pte_create(paddr >> RISCV_PGSHIFT, PTE_G | PTE_R | PTE_W | PTE_X);
   }
 ```
-The machine level SBI BBL code is remapped at the top of the range reserved above ```highest_va```. The BBL has been loaded at ```DRAM_BASE``` machine level physical address. This address range is mapped as a read only range for supervisor mode. The PTE are also marked as global so they are visible in all address spaces. This address range is inaccessible through the suppervisor page table structure initialized in ```middle_pt```.
+The machine level SBI BBL code is remapped at the top of the range reserved above ```highest_va``` through ```sbi_pt``` page table allocated early. The BBL has been loaded at ```DRAM_BASE``` machine level physical address. This address range is mapped as a read only range for supervisor mode. The PTE are also marked as global so they are visible in all address spaces. 
 
 ```
   // map SBI at top of vaddr space
@@ -130,6 +130,9 @@ The machine level SBI BBL code is remapped at the top of the range reserved abov
     uintptr_t idx = (1 << RISCV_PGLEVEL_BITS) - num_sbi_pages + i;
     sbi_pt[idx] = pte_create((DRAM_BASE / RISCV_PGSIZE) + i, PTE_G | PTE_R | PTE_X);
   }
+```
+After ```sbi_pt``` has been filled it is inserted in the superviser page directory. This establishes the mapping visible from superviser level.
+```
   pte_t* sbi_pte = middle_pt + ((num_middle_pts << RISCV_PGLEVEL_BITS)-1);
   assert(!*sbi_pte);
   *sbi_pte = ptd_create((uintptr_t)sbi_pt >> RISCV_PGSHIFT);
