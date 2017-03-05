@@ -129,3 +129,10 @@ The machine level BBL code with payload is remapped at the top of the range rese
   assert(!*sbi_pte);
   *sbi_pte = ptd_create((uintptr_t)sbi_pt >> RISCV_PGSHIFT);
 ```
+
+Before returning to a caller the function sets page table base register for supervisor virtual address translation. The memory barrier guaranties that all memory writes has completed so the page table is in a consistent state.
+```
+  mb();
+  root_page_table = root_pt;
+  write_csr(sptbr, (uintptr_t)root_pt >> RISCV_PGSHIFT);
+```
