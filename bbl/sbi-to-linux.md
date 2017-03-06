@@ -161,3 +161,33 @@ The address ```0xfffffffffffff800``` is 2048 bytes offset from the top of the vi
    0xfffffffffffff8b8:	nop
    0xfffffffffffff8bc:	nop
 ```
+
+As you can see not all SBI trampolines stubs invokes ```ecall``` system call to call a higher priviledge level, the machine level in this case. For example ```query_memory``` is just an unconditional jump to the SBI code mapped to the Linux kernel space. 
+```
+ 0xfffffffffffff820:	j	0xffffffffffff92c0
+ ```
+ In that case the CPU doesn't switch to machine level and continues in the supervisor mode with virtual memory enabled. When CPU switches to the machine mode it disables virtual address translation and switches back to physical addresses.
+ Below is a call stack when ```query_memory``` is called. A you can see the CPU continues with virtual address memory enabled and uses virtual addresses, the debugger was unable to resolve a call to ```query_memory``` in BBL as it was not aware about the code being remapped to the Linux system address space.
+ ```
+#0  0xffffffffffff92c8 in ?? ()
+#1  0xffffffff80002c38 in setup_bootmem () at arch/riscv/kernel/setup.c:149
+#2  setup_arch (cmdline_p=<optimized out>) at arch/riscv/kernel/setup.c:152
+#3  0xffffffff80000898 in start_kernel () at init/main.c:500
+#4  0xffffffff80000040 in _start () at arch/riscv/kernel/head.S:36
+ ```
+  I guess that one of the possible reason for such ```query_memory``` implementation is to simplify development as this function returns the structure which would require either packing it in registers or translating addresses either in the Linux kernel or in BBL SDI.
+  
+ The call stack for ```sbi_hart_id``` looks differently
+ ```
+ #0  0x0000000080000c90 in mcall_trap (regs=0x82660ec0, mcause=9, mepc=18446744073709549572) at ../machine/mtrap.c:210
+#1  0x00000000800000ec in trap_vector () at ../machine/mentry.S:116
+Backtrace stopped: frame did not save the PC
+(gdb) p/x mepc
+$4 = 0xfffffffffffff804
+ ```
+ The virtual address translation is disabled and the CPU works with physical addresses. The debugger was unable to cross the boundary back to the Linux kernel stack that requires processing address space translation switching. As you can see the ```mpec``` register points to the Linux kernel virtual address just after ```ecall``` instruction
+ ```
+   0xfffffffffffff800:	li	a7,0
+   0xfffffffffffff804:	ecall
+   0xfffffffffffff808:	ret
+ ```
