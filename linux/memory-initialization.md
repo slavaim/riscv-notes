@@ -42,4 +42,17 @@ void __init paging_init(void)
   ....
 }
 ```
+The Linux kernel quiries the available memory size in ```setup_bootmem``` by invoking SBI interface's ```sbi_query_memory``` which results in a call to ```__sbi_query_memory``` BBL code executed at machine level
+```
+uintptr_t __sbi_query_memory(uintptr_t id, memory_block_info *p)
+{
+  if (id == 0) {
+    p->base = first_free_paddr;
+    p->size = mem_size + DRAM_BASE - p->base;
+    return 0;
+  }
+
+  return -1;
+}
+```
 
