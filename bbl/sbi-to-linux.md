@@ -102,7 +102,14 @@ This code is translated by GCC to
    0xffffffff8000001c <+28>:	bnez	a0,0xffffffff80000054 <_start+84>
 ```
 
-The address ```0xfffffffffffff800``` is 2048 bytes offset from the top of the virtual address space last page. As we saw above this page is backed by a physical page with SBI trampoline stubs code starting at ```sbi_base``` machine level physical address. The dissassembling shows the SBI trampoline stubs
+The address ```0xfffffffffffff800``` is 2048 bytes offset from the top of the virtual address space last page. As we saw above this page is backed by a physical page with SBI trampoline stubs code starting at ```sbi_base``` machine level physical address. The dissassembling shows the SBI trampoline stubs at offsets 
+```
+ 0xfffffffffffff800 which is sbi_hart_id = -2048
+ 0xfffffffffffff810 which is sbi_num_harts = -2032
+ 0xfffffffffffff820 which is sbi_query_memory = -2016
+ 0xfffffffffffff830 which is sbi_console_putchar = -2000
+ etc
+```
 ```
 (gdb) x/48i 0xfffffffffffff800
    0xfffffffffffff800:	li	a7,0
