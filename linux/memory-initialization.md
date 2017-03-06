@@ -15,7 +15,7 @@ The kernel start offset is defined in ```linux/linux-4.6.2/arch/riscv/include/as
 #endif
 ```
 
-BBL initializes virtual memory for supervisor mode, maps the Linux kernel at PAGE_OFFSET, sets ```sptbr``` register value to root page table, switches to supervisor mode with ```$pc``` set to the entry point ```_start```. BBL does this in ```enter_supervisor_mode``` function defined in ```/work/risc-v/riscv-tools/riscv-pk/machine/minit.c```
+BBL initializes virtual memory for supervisor mode, maps the Linux kernel at PAGE_OFFSET, sets ```sptbr``` register value to a root page table physical address, switches to the supervisor mode with ```$pc``` set to the entry point ```_start```. BBL does this in ```enter_supervisor_mode``` function defined in ```/work/risc-v/riscv-tools/riscv-pk/machine/minit.c```
 
 ```
 void enter_supervisor_mode(void (*fn)(uintptr_t), uintptr_t stack)
@@ -32,5 +32,5 @@ void enter_supervisor_mode(void (*fn)(uintptr_t), uintptr_t stack)
 }
 ```
 
-The important difference between RISC-V case and a many other CPUs( e.g. x86 )is that Linux kernel's entry point is called with virtual memory initialized by boot loader executing at higher privilege mode.
+The important difference between RISC-V case and many other CPUs( e.g. x86 )is that Linux kernel's entry point is called with virtual memory initialized by boot loader executing at higher privilege mode.
 
