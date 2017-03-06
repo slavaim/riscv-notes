@@ -1,5 +1,5 @@
 
-The machine level SBI is exported to linux by mapping it at the top of the address space.
+The machine level SBI is exported to the Linux kernel by mapping it at the top of the address space.
 The mapping is performed by BBL in ```supervisor_vm_init``` defined in ```riscv-tools/riscv-pk/bbl/bbl.c```.
 
 ```
@@ -16,7 +16,7 @@ The mapping is performed by BBL in ```supervisor_vm_init``` defined in ```riscv-
   *sbi_pte = ptd_create((uintptr_t)sbi_pt >> RISCV_PGSHIFT);
 ```
 
-You can read more on ```supervisor_vm_init``` here https://github.com/slavaim/riscv-notes/blob/master/bbl/supervisor_vm_init.md . From the code above you can see that the last page ending at ```_sbi_end``` physical address is mapped at the last page of the virtual address space.
+You can read more on ```supervisor_vm_init``` here https://github.com/slavaim/riscv-notes/blob/master/bbl/supervisor_vm_init.md . From the code above you can see that the last page ending at ```_sbi_end``` physical address is mapped at the last page of the supervisor virtual address space.
 
 The offsets to SBI entry points are defined in ```riscv-tools/riscv-pk/machine/sbi.S``` as
 ```
@@ -55,7 +55,7 @@ These definitions are offsets from the top of the address space for the SBI tram
   tail __sbi_query_memory
 ```
 
-The SBI trampoline stubs code start is defined as ```sbi_base``` and is aligned to a page boundary by ```align RISCV_PGSHIFT``` directive. The first ```RISCV_PGSIZE - 2048``` bytes are reserved by ```.skip RISCV_PGSIZE - 2048``` directive so the first instruction starts at 2048 bytes offset from the page top. 
+The SBI trampoline stubs code start is defined as ```sbi_base``` and is aligned to a page boundary by ```align RISCV_PGSHIFT``` directive. The first ```RISCV_PGSIZE - 2048``` bytes are reserved by ```.skip RISCV_PGSIZE - 2048``` directive so the first instruction starts at 2048 bytes offset from the page top defined as 
 ```
 .align RISCV_PGSHIFT
   .globl sbi_base
@@ -64,6 +64,12 @@ sbi_base:
   # TODO: figure out something better to do with this space.  It's not
   # protected from the OS, so beware.
   .skip RISCV_PGSIZE - 2048
+```
+The end of the section is also aligned at the page boundary and is defined as
+```
+  .align RISCV_PGSHIFT
+  .globl _sbi_end
+_sbi_end:
 ```
  The SBI trampoline stubs section ```.sbi``` is placed at the end of BBL just before the payload by defining the layout in ```riscv-tools/riscv-pk/bbl/bbl.lds``` as
  ```
