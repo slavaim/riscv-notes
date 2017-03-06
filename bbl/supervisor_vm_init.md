@@ -146,3 +146,4 @@ Before returning to a caller the function sets page table base register for supe
   root_page_table = root_pt;
   write_csr(sptbr, (uintptr_t)root_pt >> RISCV_PGSHIFT);
 ```
+P.S. BBL sets ```sptbr``` to the ```root_page_table``` value in ```enter_supervisor_mode``` which makes redundant the above call to ```write_csr(sptbr, (uintptr_t)root_pt >> RISCV_PGSHIFT);```.
