@@ -138,6 +138,8 @@ After ```sbi_pt``` has been filled it is inserted in the superviser page directo
   *sbi_pte = ptd_create((uintptr_t)sbi_pt >> RISCV_PGSHIFT);
 ```
 
+The last page ending at ```_sbi_end``` physical address is mapped at the last page of the virtual address space. SBI mapping in detailes is descibed here https://github.com/slavaim/riscv-notes/blob/master/bbl/sbi-to-linux.md 
+
 Before returning to a caller the function sets page table base register for supervisor virtual address translation. The memory barrier guaranties that all memory writes has completed so the page table is in a consistent state.
 ```
   mb();
