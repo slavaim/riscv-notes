@@ -175,7 +175,7 @@ As you can see not all SBI trampolines stubs invoke ```ecall``` system call to c
 #3  0xffffffff80000898 in start_kernel () at init/main.c:500
 #4  0xffffffff80000040 in _start () at arch/riscv/kernel/head.S:36
  ```
-  I guess that one of the possible reason for such ```query_memory``` implementation is to simplify development as this function returns the structure which would require either packing it in registers or translating addresses either in the Linux kernel or in BBL SDI.
+  I guess that one of the possible reasons for such ```query_memory``` implementation is to simplify development as this function returns the structure which would require either packing it in registers or translating addresses either in the Linux kernel or in BBL SDI.
   
  The call stack for ```sbi_hart_id``` looks differently
  ```
