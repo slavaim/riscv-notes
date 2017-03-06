@@ -37,7 +37,7 @@ The offsets to SBI entry points are defined in ```riscv-tools/riscv-pk/machine/s
 .globl sbi_remote_fence_i; sbi_remote_fence_i = -1808
 ```
 
-These definitions are offsets from the top of the address space for the SBI stubs 3 instructuions stubs aligned on 4 bytes defined in ```riscv-tools/riscv-pk/machine/sbi_entry.S```
+These definitions are offsets from the top of the address space for the SBI trampoline stubs defined in ```riscv-tools/riscv-pk/machine/sbi_entry.S```
 ```
   # hart_id
   .align 4
@@ -55,7 +55,7 @@ These definitions are offsets from the top of the address space for the SBI stub
   tail __sbi_query_memory
 ```
 
-The SBI stubs code start is defined as ```sbi_base``` and is aligned to a page boundary by ```align RISCV_PGSHIFT``` directive. The first ```RISCV_PGSIZE - 2048``` bytes are reserved by ```.skip RISCV_PGSIZE - 2048``` directive so the first instruction starts at 2048 bytes offset from the page top. 
+The SBI trampoline stubs code start is defined as ```sbi_base``` and is aligned to a page boundary by ```align RISCV_PGSHIFT``` directive. The first ```RISCV_PGSIZE - 2048``` bytes are reserved by ```.skip RISCV_PGSIZE - 2048``` directive so the first instruction starts at 2048 bytes offset from the page top. 
 ```
 .align RISCV_PGSHIFT
   .globl sbi_base
@@ -65,7 +65,7 @@ sbi_base:
   # protected from the OS, so beware.
   .skip RISCV_PGSIZE - 2048
 ```
- The SBI stubs section ```.sbi``` is placed at the end of BBL just before the payload by defining the layout in ```riscv-tools/riscv-pk/bbl/bbl.lds``` as
+ The SBI trampoline stubs section ```.sbi``` is placed at the end of BBL just before the payload by defining the layout in ```riscv-tools/riscv-pk/bbl/bbl.lds``` as
  ```
    .sbi :
   {
@@ -80,4 +80,70 @@ sbi_base:
   _end = .;
  ```
 
-So the ```supervisor_vm_init``` code that maps machine level physical addresses to supervisor virtuall addresses maps the BBL .sbi section which contains SBI stubs at the top of the address space.
+So the ```supervisor_vm_init``` code that maps machine level physical addresses to supervisor virtuall addresses maps the BBL ```.sbi``` section which contains SBI trampoline stubs at the top of the supervisor virtual address space.
+
+Linux kernel access SBI trampoline stubs by a call with offsets defined in ```linux/linux-4.6.2/arch/riscv/kernel/sbi.S``` which is a carbon copy of ```riscv-tools/riscv-pk/machine/sbi.S``` . For example a snippet from Linux kernel entry point ```_start``` defined in  ```linux/linux-4.6.2/arch/riscv/kernel/head.S``` 
+
+```
+	/* See if we're the main hart */
+	call sbi_hart_id
+	bnez a0, .Lsecondary_start
+```
+This code is translated by GCC to 
+```
+   0xffffffff80000018 <+24>:	jalr	-2048(zero) # 0xfffffffffffff800
+   0xffffffff8000001c <+28>:	bnez	a0,0xffffffff80000054 <_start+84>
+```
+
+The address ```0xfffffffffffff800``` is 2048 bytes offset from the top of the virtual address space last page. As we saw above this page is backed by a physical page with SBI trampoline stubs code. The dissassemblong shows the SBI trampoline stubs
+```
+(gdb) x/48i 0xfffffffffffff800
+   0xfffffffffffff800:	li	a7,0
+   0xfffffffffffff804:	ecall
+   0xfffffffffffff808:	ret
+   0xfffffffffffff80c:	nop
+   0xfffffffffffff810:	auipc	a0,0xfffff
+   0xfffffffffffff814:	lw	a0,-1888(a0)
+   0xfffffffffffff818:	ret
+   0xfffffffffffff81c:	nop
+   0xfffffffffffff820:	j	0xffffffffffff92c0
+   0xfffffffffffff824:	nop
+   0xfffffffffffff828:	nop
+   0xfffffffffffff82c:	nop
+   0xfffffffffffff830:	li	a7,1
+   0xfffffffffffff834:	ecall
+   0xfffffffffffff838:	ret
+   0xfffffffffffff83c:	nop
+   0xfffffffffffff840:	li	a7,2
+   0xfffffffffffff844:	ecall
+   0xfffffffffffff848:	ret
+   0xfffffffffffff84c:	nop
+   0xfffffffffffff850:	unimp
+   0xfffffffffffff854:	nop
+   0xfffffffffffff858:	nop
+   0xfffffffffffff85c:	nop
+   0xfffffffffffff860:	li	a7,4
+   0xfffffffffffff864:	ecall
+   0xfffffffffffff868:	ret
+   0xfffffffffffff86c:	nop
+   0xfffffffffffff870:	li	a7,5
+   0xfffffffffffff874:	ecall
+   0xfffffffffffff878:	ret
+   0xfffffffffffff87c:	nop
+   0xfffffffffffff880:	lui	a0,0x989
+   0xfffffffffffff884:	addiw	a0,a0,1664
+   0xfffffffffffff888:	ret
+   0xfffffffffffff88c:	nop
+   0xfffffffffffff890:	li	a7,6
+   0xfffffffffffff894:	ecall
+   0xfffffffffffff898:	nop
+   0xfffffffffffff89c:	nop
+   0xfffffffffffff8a0:	li	a7,7
+   0xfffffffffffff8a4:	ecall
+   0xfffffffffffff8a8:	ret
+   0xfffffffffffff8ac:	nop
+   0xfffffffffffff8b0:	j	0xffffffffffff92f8
+   0xfffffffffffff8b4:	nop
+   0xfffffffffffff8b8:	nop
+   0xfffffffffffff8bc:	nop
+```
