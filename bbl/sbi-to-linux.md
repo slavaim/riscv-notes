@@ -185,7 +185,7 @@ Backtrace stopped: frame did not save the PC
 (gdb) p/x mepc
 $4 = 0xfffffffffffff804
  ```
- The virtual address translation is disabled and the CPU works with physical addresses. The debugger was unable to cross the boundary back to the Linux kernel stack that requires processing address space translation switching. As you can see the ```mpec``` register points to the Linux kernel virtual address just after ```ecall``` instruction
+ The virtual address translation is disabled and the CPU works with physical addresses. The debugger was unable to cross the boundary back to the Linux kernel stack that requires processing address space translation switching. As you can see the ```mpec``` register points to the ```ecall``` instruction virtual address in supervisor mode
  ```
    0xfffffffffffff800:	li	a7,0
    0xfffffffffffff804:	ecall
