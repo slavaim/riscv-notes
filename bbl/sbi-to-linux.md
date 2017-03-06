@@ -1,5 +1,6 @@
 
-The machine level SBI is exported to the Linux kernel by mapping it at the top of the address space.
+The machine level SBI ( Supervisor Binary Interface ) is exported to the Linux kernel by mapping it at the top of the address space.
+
 The mapping is performed by BBL in ```supervisor_vm_init``` defined in ```riscv-tools/riscv-pk/bbl/bbl.c```.
 
 ```
