@@ -42,7 +42,7 @@ void __init paging_init(void)
   ....
 }
 ```
-The Linux kernel quiries the available memory size in ```setup_bootmem``` by invoking SBI interface's ```sbi_query_memory``` which results in a call to ```__sbi_query_memory``` BBL routine executed (suprisingly) in supervisor mode as it has been mapped to the supervisor virtual address space and  ```ecall``` instruction is not invoked for ```sbi_query_memory```
+The Linux kernel quiries the available memory size in ```setup_bootmem``` by invoking SBI interface's ```sbi_query_memory``` which results in a call to ```__sbi_query_memory``` BBL routine executed (suprisingly) in supervisor mode as SBI has been mapped to the supervisor virtual address space and  ```ecall``` instruction is not invoked for ```sbi_query_memory```
 ```
 uintptr_t __sbi_query_memory(uintptr_t id, memory_block_info *p)
 {
