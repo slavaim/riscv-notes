@@ -179,7 +179,7 @@ As you can see not all SBI trampolines stubs invoke ```ecall``` system call to c
   
  The call stack for ```sbi_hart_id``` looks differently
  ```
- #0  0x0000000080000c90 in mcall_trap (regs=0x82660ec0, mcause=9, mepc=18446744073709549572) at ../machine/mtrap.c:210
+#0  0x0000000080000c90 in mcall_trap (regs=0x82660ec0, mcause=9, mepc=18446744073709549572) at ../machine/mtrap.c:210
 #1  0x00000000800000ec in trap_vector () at ../machine/mentry.S:116
 Backtrace stopped: frame did not save the PC
 (gdb) p/x mepc
