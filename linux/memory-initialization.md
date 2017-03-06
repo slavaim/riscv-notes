@@ -34,3 +34,12 @@ void enter_supervisor_mode(void (*fn)(uintptr_t), uintptr_t stack)
 
 The important difference between RISC-V case and many other CPUs( e.g. x86 )is that Linux kernel's entry point is called with virtual memory initialized by boot loader executing at higher privilege mode.
 
+The Linux kernel retrieves the page table allocated and initialized by BBL and saves its virtual address at the master kernel Page Tables ```init_mm.pgd``` by reading a physical address from the ```sptbr``` register and converting it to a virtual address.
+```
+void __init paging_init(void)
+{
+	init_mm.pgd = (pgd_t *)pfn_to_virt(csr_read(sptbr));
+  ....
+}
+```
+
