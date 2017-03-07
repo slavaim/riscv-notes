@@ -167,7 +167,7 @@ As you can see not all SBI trampolines stubs invoke ```ecall``` system call to e
  0xfffffffffffff820:	j	0xffffffffffff92c0
  ```
  In that case the CPU doesn't switch to machine level and continues in the supervisor mode with virtual memory enabled. When CPU switches to the machine mode it disables virtual address translation and switches back to physical addresses.
- Below is a call stack when ```query_memory``` is called. A you can see the CPU continues with virtual address memory enabled and uses virtual addresses, the debugger was unable to resolve a call to ```query_memory``` in BBL as it was not aware about the code being remapped to the Linux system address space.
+ Below is a call stack when ```query_memory``` is called. A you can see the CPU continues with virtual address memory enabled and uses virtual addresses. The debugger was unable to resolve a call to ```query_memory``` in BBL as it was not aware about the code being remapped to the Linux system address space.
  ```
 #0  0xffffffffffff92c8 in ?? ()
 #1  0xffffffff80002c38 in setup_bootmem () at arch/riscv/kernel/setup.c:149
