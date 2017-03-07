@@ -3,7 +3,7 @@ On boot the kernel has the following memory areas
 - the page tables for virtual memory support created by the bootloader
 - initial stack
 
-The pages used by the above regions must be marked as reserved so they are not used for the following allocations.
+The pages used by the above regions must be marked as reserved so they are not used for memory allocations.
 
 As shown here https://github.com/slavaim/riscv-notes/blob/master/linux/memory-initialization.md the kernel makes the following calls for memory reservation.
 
@@ -12,7 +12,7 @@ As shown here https://github.com/slavaim/riscv-notes/blob/master/linux/memory-in
 	reserve_boot_page_table(pfn_to_virt(csr_read(sptbr)));
 ```
 
-The first call is to reserve the area from ```&_start``` to ```&_end`` , this area is defined in the following linker script.
+The first call to ```memblock_reserve``` is to reserve the area from ```&_start``` to ```&_end``` , this area is defined in the following linker script.
 
 ```
 SECTIONS
@@ -81,21 +81,21 @@ SECTIONS
 }
 ```
 
-As you can see this area encompasses all kernel code and data excluding debug information. This area starts at ```ffffffff80000000```. You can easily find the end address from the System.map file. The vaues for my test kernel are 
+As you can see this area encompasses all kernel code and data excluding debug information. This area starts at ```ffffffff80000000```. You can easily find the start and end addresses from the ```System.map``` file. These values for my test kernel are 
 ```
 ffffffff80000000 T _start
 ffffffff803b10b4 R _end
 ```
 
-The second call reserves the initial page table pages.  
-Where is a stack reservation? The stack is reserved by the first call as the initial stack is allocated from the kernel data section. The initial stack is staically allocated as ```init_thread_union.stack``` . The ```init_thread_union``` has the following type definition in ```linux/linux-4.6.2/include/linux/sched.h```
+The second call to ```reserve_boot_page_table``` reserves the initial page table pages.  
+Where is a stack reservation? The stack is reserved by the first call to ```memblock_reserve``` as the initial stack is allocated from the kernel data section. The initial stack is staically allocated as ```init_thread_union.stack``` . The ```init_thread_union``` has the following type definition in ```linux/linux-4.6.2/include/linux/sched.h```
 ```
 union thread_union {
 	struct thread_info thread_info;
 	unsigned long stack[THREAD_SIZE/sizeof(long)];
 };
 ```
-For my test kernel the address of the init_thread_union is again extracted from System.map as
+For my test kernel the address of the ```init_thread_union``` is again extracted from ```System.map``` as
 ```
 ffffffff8035e000 D init_thread_union
 ```
