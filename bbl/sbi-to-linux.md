@@ -162,7 +162,7 @@ The address ```0xfffffffffffff800``` is 2048 bytes offset from the top of the vi
    0xfffffffffffff8bc:	nop
 ```
 
-As you can see not all SBI trampolines stubs invoke ```ecall``` system call to call a higher priviledge level, the machine level in this case. For example ```query_memory``` is just an unconditional jump to the SBI code mapped to the Linux kernel space. 
+As you can see not all SBI trampolines stubs invoke ```ecall``` system call to enter a higher privilege level, the machine level in this case. For example ```query_memory``` is just an unconditional jump to the SBI code mapped to the Linux kernel space. 
 ```
  0xfffffffffffff820:	j	0xffffffffffff92c0
  ```
