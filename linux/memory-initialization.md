@@ -51,6 +51,7 @@ void __init setup_arch(char **cmdline_p)
 	....
 }
 ```
+The ```_stext, _etext, _edata, _end``` global variables are defined in the linker script ```linux/linux-4.6.2/arch/riscv/kernel/vmlinux.lds.S``` which defines the kernel memory layout. These variables defines the kernel section borders. The thorough description regarding linkers scripts can be found here https://sourceware.org/binutils/docs/ld/Scripts.html .
 
 The first function being called is ```setup_bootmem```
 
@@ -103,7 +104,7 @@ uintptr_t __sbi_query_memory(uintptr_t id, memory_block_info *p)
 }
 ```
 More about SBI can be found here https://github.com/slavaim/riscv-notes/blob/master/bbl/sbi-to-linux.md .  
-The kernel reserves the pages occupied by the kernel with a call to ```memblock_reserve(info.base, __pa(_end) - info.base);``` . Then a call to ```reserve_boot_page_table(pfn_to_virt(csr_read(sptbr)));``` reserves the pages occupied by the page table allocated by the bootloader(BBL).The Linux kernel retrieves the page table allocated and initialized by BBL by reading a physical address from the ```sptbr``` register and converting it to a virtual address. The page table virtual address is also saved at the master kernel Page Tables ```init_mm.pgd```. The snippet is from ```linux/linux-4.6.2/arch/riscv/mm/init.c```
+The kernel reserves the pages occupied by the kernel with a call to ```memblock_reserve(info.base, __pa(_end) - info.base);``` . Then a call to ```reserve_boot_page_table(pfn_to_virt(csr_read(sptbr)));``` reserves the pages occupied by the page table allocated by the bootloader, i.e. BBL.The Linux kernel retrieves the page table allocated and initialized by BBL by reading a physical address from the ```sptbr``` register and converting it to a virtual address. The page table virtual address is also saved at the master kernel Page Tables ```init_mm.pgd```. The snippet is from ```linux/linux-4.6.2/arch/riscv/mm/init.c```
 ```
 void __init paging_init(void)
 {
