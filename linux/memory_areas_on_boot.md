@@ -1,4 +1,4 @@
-On boot the kernel has the following memory areas
+On boot the kernel has the following memory areas required for code execution
 - vmlinux ELF code and data sections mapped by the bootloader
 - the page tables for virtual memory support created by the bootloader
 - initial stack
