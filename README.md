@@ -3,7 +3,7 @@
 
 The repository contains some notes on RISC-V CPU and related stuff - Linux, BBL, QEMU. These notes are primarily for my personal use so all paths are relative to ones on my Linux laptop.
 
-Anyway, this is a directory structure for paths in all documents for this repository
+Anyway, this is a directory structure for paths in all documents in this repository
 ```
 slava@slava-P34V2:/work/risc-v$ tree -L 2
 .
