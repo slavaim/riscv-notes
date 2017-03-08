@@ -81,7 +81,7 @@ SECTIONS
 }
 ```
 
-As you can see this area encompasses all kernel code and data excluding debug information. This area starts at ```ffffffff80000000```. You can easily find the start and end addresses from the ```System.map``` file. These values for my test kernel are 
+As you can see this area encompasses all kernel code and data excluding debug information. This area starts at ```ffffffff80000000```. You can easily find the start and end addresses from the ```System.map``` file. These values for my test kernel
 ```
 ffffffff80000000 T _start
 ffffffff803b10b4 R _end
