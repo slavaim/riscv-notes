@@ -68,11 +68,11 @@ GDB can not unwind after ```handle_exception``` as it is isunable to verify that
 ```
     /*a call frame to facilitate with debugging*/
     .macro SET_GDB_FRAME
-    addi	sp, sp, -2*SZREG /* allocate the frame */
+    addi    sp, sp, -2*SZREG /* allocate the frame */
     REG_S   s0, 0(sp)        /* get the frame pointer at the exception moment */
     csrr    s0, sepc         /* get the exception PC */
-    REG_S	s0, SZREG(sp)    /* set the exception PC as $ra for the frame */
-    addi	s0, sp, 2*SZREG  /* set s0 to the current frame pointer */
+    REG_S   s0, SZREG(sp)    /* set the exception PC as $ra for the frame */
+    addi    s0, sp, 2*SZREG  /* set s0 to the current frame pointer */
     .endm
 
     .macro DEL_GDB_FRAME
