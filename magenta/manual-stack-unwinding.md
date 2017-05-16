@@ -81,11 +81,28 @@ GDB can not unwind after ```handle_exception``` as it is isunable to verify that
     .endm
 ```
 
-Now the $pc, $sp and $s0 (a frame pointer ) registers can be set to unwind the stack before ```handle_exception``` was called by a CPU.
+From the frame before the exception handler we see that the ```arch_thread_construct_first``` raised the exception.
+We need to examine this function prologue to get the offset to the bootom of the stack from the frame address.
+
+```
+(gdb) x/10i arch_thread_construct_first
+   0xffffffff800022b0 <arch_thread_construct_first>:	addi	sp,sp,-64
+   0xffffffff800022b4 <arch_thread_construct_first+4>:	sd	ra,56(sp)
+   0xffffffff800022b8 <arch_thread_construct_first+8>:	sd	s0,48(sp)
+   0xffffffff800022bc <arch_thread_construct_first+12>:	sd	s1,40(sp)
+   0xffffffff800022c0 <arch_thread_construct_first+16>:	addi	s0,sp,64
+   0xffffffff800022c4 <arch_thread_construct_first+20>:	mv	s1,ra
+   0xffffffff800022c8 <arch_thread_construct_first+24>:	sd	a0,-56(s0)
+   0xffffffff800022cc <arch_thread_construct_first+28>:	li	a4,0
+   0xffffffff800022d0 <arch_thread_construct_first+32>:	li	a5,1
+=> 0xffffffff800022d4 <arch_thread_construct_first+36>:	sw	a5,0(a4)
+```
+
+Now the ```$pc, $sp``` and ```$s0``` (a frame pointer ) registers can be set to unwind the stack before ```handle_exception``` was called by a CPU. 64 bytes was subtracted from the ```s0``` register value to get the ```sp``` register value according to the function prologue displayed above.
 
 ```
 (gdb) set $pc=0xffffffff800022d4
-(gdb) set $sp=0xffffffff80040f70
+(gdb) set $sp=0xffffffff80040f70-64
 (gdb) set $s0=0xffffffff80040f70
 (gdb) bt
 #0  0xffffffff800022d4 in arch_thread_construct_first (t=0xffffffff800426d8 <idle_threads>) at kernel/arch/riscv/thread.c:34
