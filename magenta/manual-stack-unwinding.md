@@ -22,28 +22,30 @@ $1 = 0xffffffff80040d88
 0xffffffff80040f60 <init_thread_union+8032>:	0xffffffff80040fb0	0xffffffff80008f20
 (gdb) x/2xg 0xffffffff80040fb0-16
 0xffffffff80040fa0 <init_thread_union+8096>:	0xffffffff80040fe0	0xffffffff80008ff8
-(gdb) x/10i 0xffffffff800022d4
+(gdb) x/5i 0xffffffff8000027c
+   0xffffffff8000027c <handle_exception+352>:	ld	s1,256(sp)
+   0xffffffff80000280 <handle_exception+356>:	csrci	sstatus,2
+   0xffffffff80000284 <handle_exception+360>:	andi	s1,s1,256
+   0xffffffff80000288 <handle_exception+364>:	bnez	s1,0xffffffff80000294 <handle_exception+376>
+   0xffffffff8000028c <handle_exception+368>:	addi	s1,sp,280
+(gdb) x/5i 0xffffffff800022d4
    0xffffffff800022d4 <arch_thread_construct_first+36>:	sw	a5,0(a4)
    0xffffffff800022d8 <arch_thread_construct_first+40>:	jal	ra,0xffffffff800021e4 <current_thread_info>
-   0xffffffff800022dc <arch_thread_construct_first+44>:	0xfca43c23
-   0xffffffff800022e0 <arch_thread_construct_first+48>:	0xfd843783
-   0xffffffff800022e4 <arch_thread_construct_first+52>:	0xfc843703
-   0xffffffff800022e8 <arch_thread_construct_first+56>:	0xe7b023
-   0xffffffff800022ec <arch_thread_construct_first+60>:	jal	ra,0xffffffff80002184 <arch_curr_cpu_num>
-   0xffffffff800022f0 <arch_thread_construct_first+64>:	mv	a4,a0
-   0xffffffff800022f4 <arch_thread_construct_first+68>:	0xfd843783
-   0xffffffff800022f8 <arch_thread_construct_first+72>:	sw	a4,16(a5)
-(gdb) x/10i 0xffffffff80008f20
+   0xffffffff800022dc <arch_thread_construct_first+44>:	sd	a0,-40(s0)
+   0xffffffff800022e0 <arch_thread_construct_first+48>:	ld	a5,-40(s0)
+   0xffffffff800022e4 <arch_thread_construct_first+52>:	ld	a4,-56(s0)
+(gdb) x/5i 0xffffffff80008f20
    0xffffffff80008f20 <thread_construct_first+188>:	addi	a5,s0,-48
    0xffffffff80008f24 <thread_construct_first+192>:	li	a2,0
    0xffffffff80008f28 <thread_construct_first+196>:	mv	a1,a5
    0xffffffff80008f2c <thread_construct_first+200>:	lui	a5,0x80045
    0xffffffff80008f30 <thread_construct_first+204>:	addi	a0,a5,-1232
-   0xffffffff80008f34 <thread_construct_first+208>:	jal	ra,0xffffffff8000525c <spin_lock_save>
-   0xffffffff80008f38 <thread_construct_first+212>:	0xfc843783
-   0xffffffff80008f3c <thread_construct_first+216>:	addi	a5,a5,8
-   0xffffffff80008f40 <thread_construct_first+220>:	mv	a1,a5
-   0xffffffff80008f44 <thread_construct_first+224>:	lui	a5,0x80041
+(gdb) x/5i 0xffffffff80008ff8
+   0xffffffff80008ff8 <thread_init_early+112>:	jal	ra,0xffffffff80007678 <sched_init_early>
+   0xffffffff80008ffc <thread_init_early+116>:	nop
+   0xffffffff80009000 <thread_init_early+120>:	ld	ra,40(sp)
+   0xffffffff80009004 <thread_init_early+124>:	ld	s0,32(sp)
+   0xffffffff80009008 <thread_init_early+128>:	ld	s1,24(sp)
 (gdb) set $pc=0xffffffff800022d4
 (gdb) set $sp=0xffffffff80040f70
 (gdb) set $s0=0xffffffff80040f70
@@ -54,5 +56,4 @@ $1 = 0xffffffff80040d88
 #3  0xffffffff80003ec4 in lk_main () at kernel/top/main.c:53
 #4  0xffffffff8000146c in _riscv_start () at kernel/arch/riscv/rv64/start.S:42
 Backtrace stopped: frame did not save the PC
-(gdb) 
 ```
