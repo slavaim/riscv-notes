@@ -76,8 +76,8 @@ GDB can not unwind after ```handle_exception``` as it is isunable to verify that
     .endm
 
     .macro DEL_GDB_FRAME
-    REG_L	s0, 0(sp)        /* restore the caller frame pointer */
-    addi	sp, sp, 2*SZREG  /* restore the stack pointer */
+    REG_L   s0, 0(sp)        /* restore the caller frame pointer */
+    addi    sp, sp, 2*SZREG  /* restore the stack pointer */
     .endm
 ```
 
