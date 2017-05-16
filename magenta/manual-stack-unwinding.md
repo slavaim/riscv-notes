@@ -62,14 +62,14 @@ $1 = 0xffffffff80040d88
    0xffffffff80009008 <thread_init_early+128>:	ld	s1,24(sp)
 ```
   
-GDB can not unwind after ```handle_exception``` as it is isunable to verify that a frame pointer is valid, the ```handle_exception``` function has been written on assembler with a prolog that restores ```sp``` from a scratch register instead of a frame initalization. I added a frame pointer saving for ```handle_exception``` after the stack pointer restoration.  
+GDB can not unwind after ```handle_exception``` as it is isunable to verify that the ```handle_exception``` frame is valid, the ```handle_exception``` function has been written on assembler with a prolog that restores ```sp``` from a scratch register instead of a frame initalization. I added a frame pointer saving for ```handle_exception``` after the stack pointer restoration.  
   
 
 ```
     /*a call frame to facilitate with debugging*/
     .macro SET_GDB_FRAME
     addi	sp, sp, -2*SZREG /* allocate the frame */
-    REG_S	s0, 0(sp)        /* get the frame pointer at the exception moment */
+    REG_S   s0, 0(sp)        /* get the frame pointer at the exception moment */
     csrr    s0, sepc         /* get the exception PC */
     REG_S	s0, SZREG(sp)    /* set the exception PC as $ra for the frame */
     addi	s0, sp, 2*SZREG  /* set s0 to the current frame pointer */
@@ -81,7 +81,7 @@ GDB can not unwind after ```handle_exception``` as it is isunable to verify that
     .endm
 ```
 
-Now the $pc, $sp and $s0 (a frame pointer ) can be set to unwind the stack before ```handle_exception``` was called by a CPU.
+Now the $pc, $sp and $s0 (a frame pointer ) registers can be set to unwind the stack before ```handle_exception``` was called by a CPU.
 
 ```
 (gdb) set $pc=0xffffffff800022d4
