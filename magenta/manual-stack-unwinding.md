@@ -62,7 +62,7 @@ $1 = 0xffffffff80040d88
    0xffffffff80009008 <thread_init_early+128>:	ld	s1,24(sp)
 ```
   
-GDB can not unwind after ```handle_exception``` as it is isunable to verify that the ```handle_exception``` frame is valid, the ```handle_exception``` function has been written on assembler with a prolog that restores ```sp``` from a scratch register instead of a frame initalization. I added a frame pointer saving for ```handle_exception``` after the stack pointer restoration ( https://github.com/slavaim/riscv-magenta/blob/riscv/kernel/arch/riscv/rv64/exception.S ).  
+GDB can not unwind after ```handle_exception``` as it is unable to verify that the ```handle_exception``` frame is valid, the ```handle_exception``` function has been written on assembler with a prolog that restores ```sp``` from a scratch register instead of a frame initalization. I added a frame pointer saving for ```handle_exception``` after the stack pointer restoration ( https://github.com/slavaim/riscv-magenta/blob/riscv/kernel/arch/riscv/rv64/exception.S ).  
   
 
 ```
