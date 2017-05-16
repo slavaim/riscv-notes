@@ -15,8 +15,8 @@ Backtrace stopped: frame did not save the PC
 A frame stack has the following layout
 ```
 struct frame{
-    void* caller_pc;
-    coid* caller_s0;
+    coid* caller_s0; // $s0
+    void* caller_pc; // $ra
 }
 ```
 the current frame pointer is saved in the ```s0``` register.
