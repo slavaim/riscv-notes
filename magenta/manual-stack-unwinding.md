@@ -1,4 +1,6 @@
 
+A manual stack unwinding when ```handle_exception``` sets a call frame
+
 ```
 (gdb) bt
 #0  0xffffffff8002e0c4 in _panic (caller=0xffffffff80002554 <do_trap_insn_misaligned+52>, frame=0xffffffff80040de8 <init_thread_union+7656>, fmt=0xffffffff800343c8 "%s unimplemented\n")
@@ -8,6 +10,18 @@
 #2  0xffffffff80002554 in do_trap_insn_misaligned (regs=0xffffffff80040e08 <init_thread_union+7688>) at kernel/arch/riscv/traps.c:67
 #3  0xffffffff8000027c in handle_exception () at kernel/arch/riscv/rv64/exception.S:221
 Backtrace stopped: frame did not save the PC
+```
+
+A frame stack has the following layout
+```
+struct frame{
+    void* caller_pc;
+    coid* caller_s0;
+}
+```
+the current frame pointer is saved in the ```s0``` register.
+
+```
 (gdb) p/x $s0
 $1 = 0xffffffff80040d88
 (gdb) x/2xg 0xffffffff80040d88-16
@@ -46,6 +60,29 @@ $1 = 0xffffffff80040d88
    0xffffffff80009000 <thread_init_early+120>:	ld	ra,40(sp)
    0xffffffff80009004 <thread_init_early+124>:	ld	s0,32(sp)
    0xffffffff80009008 <thread_init_early+128>:	ld	s1,24(sp)
+```
+
+GDB is can't to unwind after ```handle_exception``` as it unable to verify that a frame pointer is valid, the function is written on assembler with a prolog that restores sp from a scratch register instead of a frame initalization. I added frame pointer saving for ```handle_exception``` after the stack pointer restoration.
+
+```
+    /*a call frame to facilitate with debugging*/
+    .macro SET_GDB_FRAME
+    addi	sp, sp, -2*SZREG /* allocate the frame */
+    REG_S	s0, 0(sp)        /* get the frame pointer at the exception moment */
+    csrr    s0, sepc         /* get the exception PC */
+    REG_S	s0, SZREG(sp)    /* set the exception PC as $ra for the frame */
+    addi	s0, sp, 2*SZREG  /* set s0 to the current frame pointer */
+    .endm
+
+    .macro DEL_GDB_FRAME
+    REG_L	s0, 0(sp)        /* restore the caller frame pointer */
+    addi	sp, sp, 2*SZREG  /* restore the stack pointer */
+    .endm
+```
+
+Now the $pc, $sp and $s0 (a frame pointer ) can be set to unwind the stack before ```handle_exception``` was called by a CPU.
+
+```
 (gdb) set $pc=0xffffffff800022d4
 (gdb) set $sp=0xffffffff80040f70
 (gdb) set $s0=0xffffffff80040f70
