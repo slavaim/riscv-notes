@@ -61,8 +61,9 @@ $1 = 0xffffffff80040d88
    0xffffffff80009004 <thread_init_early+124>:	ld	s0,32(sp)
    0xffffffff80009008 <thread_init_early+128>:	ld	s1,24(sp)
 ```
-
-GDB is can't to unwind after ```handle_exception``` as it unable to verify that a frame pointer is valid, the function is written on assembler with a prolog that restores sp from a scratch register instead of a frame initalization. I added frame pointer saving for ```handle_exception``` after the stack pointer restoration.
+  
+GDB can not unwind after ```handle_exception``` as it is isunable to verify that a frame pointer is valid, the ```handle_exception``` function has been written on assembler with a prolog that restores ```sp``` from a scratch register instead of a frame initalization. I added a frame pointer saving for ```handle_exception``` after the stack pointer restoration.  
+  
 
 ```
     /*a call frame to facilitate with debugging*/
