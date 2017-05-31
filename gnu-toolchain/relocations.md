@@ -55,6 +55,7 @@ Idx Name          Size      VMA               LMA               File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   8 .comment      00000011  0000000000000000  0000000000000000  00000438  2**0
                   CONTENTS, READONLY
+                  
 slava@slava-P34V2:/work/risc-v/musl-riscv/tmp$ riscv64-unknown-linux-gnu-objdump --disassemble relocation.so
 
 relocation.so:     file format elf64-littleriscv
@@ -77,6 +78,7 @@ Disassembly of section .text:
  22c:	01813403          	ld	s0,24(sp)
  230:	02010113          	addi	sp,sp,32
  234:	00008067          	ret
+ 
 slava@slava-P34V2:/work/risc-v/musl-riscv/tmp$ riscv64-unknown-linux-gnu-readelf -r  relocation.so
 
 Relocation section '.rela.dyn' at offset 0x1e8 contains 1 entries:
@@ -107,6 +109,27 @@ OFFSET           TYPE              VALUE
 The static library also has a ```.got``` (Global Offset Table) section to reference the ```__clz_tab``` array. The ```.got``` section is adjusted by the loader with the relocation data from the ```.rela.dyn``` section.
 
 ```
+slava@slava-P34V2:/work/risc-v/musl-riscv/tmp$ riscv64-unknown-linux-gnu-objdump -hr relocation.o
+
+relocation.o:     file format elf64-littleriscv
+
+Sections:
+Idx Name          Size      VMA               LMA               File off  Algn
+  0 .text         00000038  0000000000000000  0000000000000000  00000040  2**2
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+  1 .data         00000000  0000000000000000  0000000000000000  00000078  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000000  0000000000000000  0000000000000000  00000078  2**0
+                  ALLOC
+  3 .rodata       00000100  0000000000000000  0000000000000000  00000078  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 .comment      00000012  0000000000000000  0000000000000000  00000178  2**0
+                  CONTENTS, READONLY
+RELOCATION RECORDS FOR [.text]:
+OFFSET           TYPE              VALUE 
+0000000000000018 R_RISCV_GOT_HI20  __clz_tab
+000000000000001c R_RISCV_PCREL_LO12_I  .L0 
+
 slava@slava-P34V2:/work/risc-v/musl-riscv/tmp$ riscv64-unknown-linux-gnu-objdump --disassemble relocation.o
 
 relocation.o:     file format elf64-littleriscv
@@ -131,6 +154,7 @@ Disassembly of section .text:
   2c:	01813403          	ld	s0,24(sp)
   30:	02010113          	addi	sp,sp,32
   34:	00008067          	ret
+  
 slava@slava-P34V2:/work/risc-v/musl-riscv/tmp$ riscv64-unknown-linux-gnu-readelf -r  relocation.o
 
 Relocation section '.rela.text' at offset 0x2a8 contains 2 entries:
