@@ -18,7 +18,7 @@ The init process address space initialisation.
 #13 0xffffffff8000a74c in init_thread_struct (t=0xffffffff81144be0, name=0x0) at kernel/kernel/thread.c:72
 ```
 
-
+VDSO allocation and mapping:
 ```
 #0  0xffffffff8003f3a4 in VmAddressRegion::CreateSubVmarInternal (this=0xffffffff81168538, offset=18446744071580183472, size=18446744071580183440, align_pow2=255 '\377', vmar_flags=2165599120, vmo=..., 
     vmo_offset=18446744071580183472, arch_mmu_flags=4294967295, name=0xffffffff80103bd0 "vDSO constants", out=0xffffffff81146c70)
@@ -36,6 +36,7 @@ The init process address space initialisation.
 #10 0xffffffff8000a74c in init_thread_struct (t=0xffffffff81144be0, name=0x0) at kernel/kernel/thread.c:72
 ```
 
+Traversing VA tree to locate a gap to map VDSO:
 ```
 #0  mxtl::WAVLTree<unsigned long, mxtl::RefPtr<VmAddressRegionOrMapping>, mxtl::DefaultKeyedObjectTraits<unsigned long, VmAddressRegionOrMapping>, VmAddressRegionOrMapping::WAVLTreeTraits, mxtl::tests::intrusive_containers::DefaultWAVLTreeObserver>::sentinel (this=0xffffffff80154780 <VmAspace::KernelAspaceInitPreHeap()::_kernel_root_vmar+104>) at system/ulib/mxtl/include/mxtl/intrusive_wavl_tree.h:948
 #1  0xffffffff800441a4 in mxtl::WAVLTree<unsigned long, mxtl::RefPtr<VmAddressRegionOrMapping>, mxtl::DefaultKeyedObjectTraits<unsigned long, VmAddressRegionOrMapping>, VmAddressRegionOrMapping::WAVLTreeTraits, mxtl::tests::intrusive_containers::DefaultWAVLTreeObserver>::end (this=0xffffffff80154780 <VmAspace::KernelAspaceInitPreHeap()::_kernel_root_vmar+104>)
