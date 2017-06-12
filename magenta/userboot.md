@@ -60,7 +60,7 @@ The init process address space initialisation.
 #14 0xffffffff8000a74c in init_thread_struct (t=0xffffffff81144be0, name=0x0) at kernel/kernel/thread.c:72
 ```
 
-A new region is found:
+A gap region is found:
 ```
 #0  0xffffffff8004103c in VmAddressRegion::CheckGapLocked (this=0xffffffff80154718 <VmAspace::KernelAspaceInitPreHeap()::_kernel_root_vmar>, prev=..., next=..., pva=0xffffffff81146ba0, search_base=0, 
     align=4096, region_size=4096, min_gap=0, arch_mmu_flags=24) at kernel/kernel/vm/vm_address_region.cpp:486
@@ -82,4 +82,9 @@ A new region is found:
 #11 0xffffffff800060fc in bootstrap2 (arg=0x0) at kernel/top/main.c:136
 #12 0xffffffff8000a78c in initial_thread_func () at kernel/kernel/thread.c:84
 #13 0xffffffff8000a74c in init_thread_struct (t=0xffffffff81144be0, name=0x0) at kernel/kernel/thread.c:72
+
+(gdb) p/x real_gap_beg
+$63 = 0xffffffc002e01000
+(gdb) p/x real_gap_end
+$64 = 0xffffffff7fffffff
 ```
