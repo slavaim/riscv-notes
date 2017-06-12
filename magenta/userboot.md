@@ -59,3 +59,27 @@ The init process address space initialisation.
 #13 0xffffffff8000a78c in initial_thread_func () at kernel/kernel/thread.c:84
 #14 0xffffffff8000a74c in init_thread_struct (t=0xffffffff81144be0, name=0x0) at kernel/kernel/thread.c:72
 ```
+
+A new region is found:
+```
+#0  0xffffffff8004103c in VmAddressRegion::CheckGapLocked (this=0xffffffff80154718 <VmAspace::KernelAspaceInitPreHeap()::_kernel_root_vmar>, prev=..., next=..., pva=0xffffffff81146ba0, search_base=0, 
+    align=4096, region_size=4096, min_gap=0, arch_mmu_flags=24) at kernel/kernel/vm/vm_address_region.cpp:486
+#1  0xffffffff8004282c in VmAddressRegion::LinearRegionAllocatorLocked (this=0xffffffff80154718 <VmAspace::KernelAspaceInitPreHeap()::_kernel_root_vmar>, size=4096, align_pow2=12 '\f', 
+    arch_mmu_flags=24, spot=0xffffffff81146ba0) at kernel/kernel/vm/vm_address_region.cpp:769
+#2  0xffffffff80041254 in VmAddressRegion::AllocSpotLocked (this=0xffffffff80154718 <VmAspace::KernelAspaceInitPreHeap()::_kernel_root_vmar>, size=4096, align_pow2=0 '\000', arch_mmu_flags=24, 
+    spot=0xffffffff81146ba0) at kernel/kernel/vm/vm_address_region.cpp:522
+#3  0xffffffff8003f6e4 in VmAddressRegion::CreateSubVmarInternal (this=0xffffffff80154718 <VmAspace::KernelAspaceInitPreHeap()::_kernel_root_vmar>, offset=0, size=4096, align_pow2=0 '\000', 
+    vmar_flags=48, vmo=..., vmo_offset=12288, arch_mmu_flags=24, name=0xffffffff80103bd0 "vDSO constants", out=0xffffffff81146c70) at kernel/kernel/vm/vm_address_region.cpp:150
+#4  0xffffffff8003fd40 in VmAddressRegion::CreateVmMapping (this=0xffffffff80154718 <VmAspace::KernelAspaceInitPreHeap()::_kernel_root_vmar>, mapping_offset=0, size=4096, align_pow2=0 '\000', 
+    vmar_flags=48, vmo=..., vmo_offset=12288, arch_mmu_flags=24, name=0xffffffff80103bd0 "vDSO constants", out=0xffffffff81146d50) at kernel/kernel/vm/vm_address_region.cpp:268
+#5  0xffffffff800afcd4 in (anonymous namespace)::KernelVmoWindow<vdso_constants>::KernelVmoWindow (this=0xffffffff81146d50, name=0xffffffff80103bd0 "vDSO constants", vmo=..., offset=13632)
+    at kernel/lib/vdso/vdso.cpp:46
+#6  0xffffffff800aee64 in VDso::Create () at kernel/lib/vdso/vdso.cpp:226
+#7  0xffffffff80032c90 in attempt_userboot () at kernel/lib/userboot/userboot.cpp:294
+#8  0xffffffff800330ec in userboot_init (level=720895) at kernel/lib/userboot/userboot.cpp:357
+#9  0xffffffff80005da8 in lk_init_level (required_flag=LK_INIT_FLAG_PRIMARY_CPU, start_level=655360, stop_level=720895) at kernel/top/init.c:86
+#10 0xffffffff80005e4c in lk_primary_cpu_init_level (start_level=655360, stop_level=720895) at kernel/include/lk/init.h:51
+#11 0xffffffff800060fc in bootstrap2 (arg=0x0) at kernel/top/main.c:136
+#12 0xffffffff8000a78c in initial_thread_func () at kernel/kernel/thread.c:84
+#13 0xffffffff8000a74c in init_thread_struct (t=0xffffffff81144be0, name=0x0) at kernel/kernel/thread.c:72
+```
