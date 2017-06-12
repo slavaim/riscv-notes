@@ -1,6 +1,6 @@
 Starting the init process.
 
-The init process adress space initialization.
+The init process address space initialisation.
 
 ```
 #2  0xffffffff80004690 in arch_mmu_init_aspace (aspace=0xffffffff81168310, base=16777216, size=274861125632, flags=0) at kernel/arch/riscv/mmu.cpp:73
