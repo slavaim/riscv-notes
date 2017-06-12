@@ -16,7 +16,6 @@ The init process address space initialisation.
 #11 0xffffffff800060fc in bootstrap2 (arg=0x0) at kernel/top/main.c:136
 #12 0xffffffff8000a78c in initial_thread_func () at kernel/kernel/thread.c:84
 #13 0xffffffff8000a74c in init_thread_struct (t=0xffffffff81144be0, name=0x0) at kernel/kernel/thread.c:72
-
 ```
 
 
@@ -35,5 +34,4 @@ The init process address space initialisation.
 #8  0xffffffff800060fc in bootstrap2 (arg=0x0) at kernel/top/main.c:136
 #9  0xffffffff8000a78c in initial_thread_func () at kernel/kernel/thread.c:84
 #10 0xffffffff8000a74c in init_thread_struct (t=0xffffffff81144be0, name=0x0) at kernel/kernel/thread.c:72
-
 ```
