@@ -1,6 +1,7 @@
 
 ```
-#0  0xffffffff80004ffc in riscv64_mmu_map (aspace=0x2e01540, vaddr_in=24, paddr_in=18446744071562422724, size_in=0, page_prot=..., top_table=0x1)
+#0  0xffffffff80005020 in riscv64_mmu_map (aspace=0xffffffff80154638 <VmAspace::KernelAspaceInitPreHeap()::_kernel_aspace+336>, vaddr_in=18446743798879883264, paddr_in=2157080576, size_in=4096, 
+    page_prot=..., top_table=0x1)
 #1  0xffffffff800057ec in arch_mmu_map (aspace=0xffffffff80154638 <VmAspace::KernelAspaceInitPreHeap()::_kernel_aspace+336>, vaddr=18446743798879883264, paddr=2157080576, count=1, mmu_flags=24, 
     mapped=0xffffffff81146a00) at kernel/arch/riscv/mmu.cpp:300
 #2  0xffffffff80051868 in VmMapping::PageFault (this=0xffffffff811686f8, va=18446743798879883264, pf_flags=17) at kernel/kernel/vm/vm_mapping.cpp:620
