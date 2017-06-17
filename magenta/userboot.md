@@ -89,3 +89,25 @@ $63 = 0xffffffc002e01000
 (gdb) p/x real_gap_end
 $64 = 0xffffffff7fffffff
 ```
+
+Switching address space to a user process
+
+```
+#3  0xffffffff80006108 in arch_mmu_context_switch (old_aspace=0x0, aspace=0xffffffff81169510) at kernel/arch/riscv/mmu.cpp:713
+#4  0xffffffff80067ac4 in vmm_context_switch (oldspace=0x0, newaspace=0xffffffff811693c0) at kernel/kernel/vm/vmm.cpp:35
+#5  0xffffffff80067b00 in vmm_context_switch (oldspace=0x0, newaspace=0xffffffff811693c0) at kernel/kernel/vm/vmm.cpp:40
+#6  0xffffffff8000cb90 in _thread_resched_internal () at kernel/kernel/thread.c:809
+#7  0xffffffff8000a58c in sched_reschedule () at kernel/kernel/sched.c:340
+#8  0xffffffff8000b81c in thread_resume (t=0xffffffff8116a7b8) at kernel/kernel/thread.c:295
+#9  0xffffffff800a0ad0 in UserThread::Start (this=0xffffffff8116a560, entry=176882478496, sp=123530141696, arg1=786048145, arg2=176882556928, initial_thread=true)
+    at kernel/lib/magenta/user_thread.cpp:279
+#10 0xffffffff8002e920 in ThreadDispatcher::Start (this=0xffffffff8116a208, pc=176882478496, sp=123530141696, arg1=786048145, arg2=176882556928, initial_thread=true)
+    at kernel/lib/magenta/include/magenta/thread_dispatcher.h:26
+#11 0xffffffff8003458c in attempt_userboot () at kernel/lib/userboot/userboot.cpp:339
+#12 0xffffffff80034678 in userboot_init (level=720895) at kernel/lib/userboot/userboot.cpp:362
+#13 0xffffffff80006b1c in lk_init_level (required_flag=LK_INIT_FLAG_PRIMARY_CPU, start_level=655360, stop_level=720895) at kernel/top/init.c:86
+#14 0xffffffff80006b74 in lk_primary_cpu_init_level (start_level=655360, stop_level=720895) at kernel/include/lk/init.h:51
+#15 0xffffffff80006d74 in bootstrap2 (arg=0x0) at kernel/top/main.c:136
+#16 0xffffffff8000b2b8 in initial_thread_func () at kernel/kernel/thread.c:84
+#17 0xffffffff8000b278 in init_thread_struct (t=0xffffffff8114ac60, name=0x0) at kernel/kernel/thread.c:72
+```
