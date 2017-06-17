@@ -1,6 +1,6 @@
 VDSO image in the kernel.
 
-VDSO elf image is embedded in the kernel. The image is added to the kernel by vdso/include/lib/rodso-asm.h when the macro
+VDSO elf image is embedded in the kernel. The image is added to the kernel by ```vdso/include/lib/rodso-asm.h``` when the macro
 
 ```
 #define RODSO_IMAGE(name, NAME) \
