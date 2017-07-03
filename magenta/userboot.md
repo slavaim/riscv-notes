@@ -1,5 +1,8 @@
 Starting the init process.
 
+The userboot image is embedded in the kernel the same way as VDSO.
+The start address of the ELF image is ```userboot_image``` defined in ```kernel/lib/userboot/userboot-image.S```. For more information see VDSO discussion https://github.com/slavaim/riscv-notes/blob/master/magenta/VDSO.md .
+
 The init process address space initialisation.
 
 ```
