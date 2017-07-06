@@ -1,5 +1,5 @@
 
-VDSO mapped after the userboot.so.
+```VDSO``` mapped after the ```libuserboot.so``` ( system/core/userboot/libuserboot.so ) which is included in the kernel through /work/fuchsia/magenta/kernel/lib/userboot/userboot-image.S
 
 ```
 [00005.216] 00000.00000> userboot: userboot rodata       0 @ [0x292f043000,0x292f045000)
@@ -9,7 +9,7 @@ VDSO mapped after the userboot.so.
 [00005.247] 00000.00000> userboot: entry point             @ 0x292f046da0
 ```
 
-userboot accesses VDSO functions through the generated ```build-magenta-qemu-riscv-rv64/system/core/userboot/vdso-syms.ld```
+libuserboot.so accesses VDSO functions through the generated ```build-magenta-qemu-riscv-rv64/system/core/userboot/vdso-syms.ld```
 
 ```
 PROVIDE_HIDDEN(_mx_acpi_cache_flush = CODE_END + 0x0000000000006a80);
