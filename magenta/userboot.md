@@ -3,6 +3,18 @@ Starting the init process.
 The userboot image is embedded in the kernel the same way as VDSO.
 The start address of the ELF image is ```userboot_image``` defined in ```kernel/lib/userboot/userboot-image.S```. For more information see VDSO discussion https://github.com/slavaim/riscv-notes/blob/master/magenta/VDSO.md .
 
+The ```libuserboot.so``` library is included in the kernel image through ```kernel/lib/userboot/userboot-image.S``` with a generated ```build-magenta-pc-x86-64/kernel/lib/userboot/userboot-code.h```
+
+```
+#define USERBOOT_FILENAME "./build-magenta-pc-x86-64/system/core/userboot/libuserboot.so"
+#define USERBOOT_DATA_START_dynsym 0x0000000000000298
+#define USERBOOT_DATA_END_dynsym 0x00000000000002b0
+#define USERBOOT_CODE_START 0x0000000000003000
+#define USERBOOT_ENTRY 0x0000000000003a40
+#define USERBOOT_ENTRY_SIZE 0x00000000000009df
+#define USERBOOT_CODE_END 0x000000000000d000
+```
+
 The init process address space initialisation.
 
 ```
